@@ -1,0 +1,6 @@
+.DS_Store
+.idea/
+app/output-docs/
+docker/mysql/
+docker/nginx/log/
+docker/laravel/php.ini

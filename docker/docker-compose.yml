@@ -1,0 +1,40 @@
+version: '3'
+services:
+    nginx:
+        build:
+            context: ./nginx
+        depends_on:
+            - laravel
+        ports:
+            - 80:80
+        volumes:
+            - ./nginx/log:/var/log/nginx
+            - ../app:/src
+        command: /bin/sh -c "nginx -g 'daemon off;'"
+
+    laravel:
+        build:
+            context: ./laravel
+        environment:
+            - DB_HOST=mysql
+            - TZ=Asia/Tokyo
+        volumes:
+            - ../app:/src
+        links:
+            - mysql:mysql
+
+    mysql:
+        image: mysql:5.7
+        volumes:
+            - ./mysql:/var/lib/mysql
+            - ./mysql_setting:/docker-entrypoint-initdb.d
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=pass
+            - MYSQL_DATABASE=app
+            - TZ=Asia/Tokyo
+        ports:
+            - "3306:3306"
+        command:
+            --innodb_use_native_aio=0
